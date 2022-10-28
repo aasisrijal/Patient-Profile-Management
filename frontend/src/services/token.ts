@@ -11,13 +11,17 @@ export function storeToken({ accessToken, refreshToken }: any) {
   localStorage.setItem(REFRESH_TOKEN, refreshToken);
 }
 
+export function setToken(keyName: string, value: string | null) {
+  if (value) localStorage.setItem(keyName, value);
+}
+
 /**
  * Get access token from storage.
  *
  * @returns {string}
  */
-export function getAccessToken() {
-  return localStorage.getItem(ACCESS_TOKEN);
+export function getToken(keyName: string) {
+  return localStorage.getItem(keyName);
 }
 
 /**

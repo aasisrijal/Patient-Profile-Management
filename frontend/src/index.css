@@ -1,19 +1,48 @@
-.form {
-  width: 50%;
-  float: center;
-  margin: 50px;
-}
-
-.patient-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto";
 }
 
 .form-center {
-  display: 'flex';
-    justify-content:'center';
-     align-items:'center';
-      height: '100vh';
+  display: "flex";
+  justify-content: "center";
+  align-items: "center";
+  height: "100vh";
+}
+
+.paper {
+  display: "flex";
+  flex-direction: "column";
+  align-items: "center";
+  padding: 2;
+}
+.avatar {
+  margin: 1;
+  /* background-color: theme.palette.secondary.main; */
+}
+.form {
+  width: "100%";
+  margin-top: 3;
+}
+.submit {
+  margin: 5;
+}
+
+.navlinks {
+  margin-left: "3px";
+  display: "flex";
+}
+
+.link {
+  text-decoration: "none";
+  color: "white";
+  font-size: "20px";
+  margin-left: "2px";
+}
+
+.link:hover {
+  color: "yellow";
+  border-bottom: "1px solid white";
 }

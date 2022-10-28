@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
 
-import { storeToken, getAccessToken, getRefreshToken } from "./token";
+import { storeToken, getToken, getRefreshToken } from "./token";
 
 const baseUrl = "http://localhost:3000/api";
 
@@ -15,7 +15,8 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
     if (config.headers) {
-      config.headers["Authorization"] = `Bearer ${getAccessToken(
+      config.headers["Authorization"] = `Bearer ${getToken(
+        "access_token"
       )}` as unknown as AxiosHeaders;
     }
     return config;
@@ -28,22 +29,23 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log(error)
     if (
       error.response.status === 500 &&
       error.response.data.message === "jwt expired"
     ) {
       // window.location.href = '/';
-      const tokens = await postRequest("auth/refresh", {
-        refreshToken: getRefreshToken()
-      });
-      // redirect to login when access token expires
-      if (!tokens) {
+      try {
+        const tokens = await postRequest("auth/refresh", {
+          refreshToken: getRefreshToken(),
+        });
+        storeToken(tokens.data);
+      } catch (e) {
         window.location.href = "/login";
       }
-      storeToken(tokens.data);
+
+      // redirect to login when access token expires
     }
-    window.location.href = "/login";
+    // window.location.href = "/login";
   }
 );
 

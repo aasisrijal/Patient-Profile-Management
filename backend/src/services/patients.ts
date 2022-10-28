@@ -1,5 +1,4 @@
 import knexConnection from "../../db";
-
 /**
  * Fetch all patients.
  *
@@ -17,5 +16,11 @@ export async function fetchAll(id) {
 
 export async function createPatient(patient) {
   const newPatient = await knexConnection("patients").insert(patient);
+  return newPatient;
+}
+
+// Delete a patient removePatient
+export async function removePatient(id) {
+  const newPatient = await knexConnection("patients").where("id", id).del();
   return newPatient;
 }

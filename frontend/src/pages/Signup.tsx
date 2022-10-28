@@ -1,58 +1,102 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/Container";
+// import Button from "react-bootstrap/Button";
+// import Form from "react-bootstrap/Form";
+// import Container from "react-bootstrap/Container";
+import {
+  Avatar,
+  Button,
+  Paper,
+  Grid,
+  Typography,
+  Container,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
-import { login, signup } from "../services/api";
+import Input from "../components/Input/Input";
+// import * from '../components/Input/input.css'
+import { loginApi, signup } from "../services/api";
+
+const initialState = { email: "", password: "" };
 
 const Signup: React.FC<{ login: Boolean }> = (props: any) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState(initialState);
+  const [isSignup, setIsSignup] = useState(!props.login);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleEmailChange = (e: any) => {
-    setEmail(e.target.value);
-  };
-  const handlePasswordChange = (e: any) => {
-    setPassword(e.target.value);
-  };
+  const handleChange = (e: any) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log({ email, password })
-    props.login ? login({ email, password }) : signup({ email, password });
+    console.log("form", isSignup, form);
+    // console.log({ email, password })
+    isSignup
+      ? signup(form)
+      : loginApi({ email: form.email, password: form.password });
   };
-  return (
-    <div >
-    <Container>
-      <Form>
-        <Form.Group className="col-md-6" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            required
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </Form.Group>
-        {/* </div> */}
+  const switchMode = () => {
+    setForm(initialState);
+    setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
+    setShowPassword(false);
+  };
+  const handleShowPassword = () => setShowPassword(!showPassword);
 
-        <Form.Group className="col-md-6" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter Password"
-            required
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
-          {props.login ? "Login" : "Signup"}
-        </Button>
-      </Form>
-      </Container>
-    </div>
+  return (
+    <Container component="main" maxWidth="sm">
+      <Paper className="paper" elevation={6}>
+        <Avatar className="avatar">
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          {isSignup ? "Sign up" : "Sign in"}
+        </Typography>
+        <form className="form" onSubmit={handleSubmit}>
+          <Grid container>
+            <Input
+              name="email"
+              label="Email Address"
+              handleChange={handleChange}
+              type="email"
+            />
+            <Input
+              name="password"
+              label="Password"
+              handleChange={handleChange}
+              type={showPassword ? "text" : "password"}
+              handleShowPassword={handleShowPassword}
+            />
+            {isSignup && (
+              <Input
+                name="confirmPassword"
+                label="Repeat Password"
+                handleChange={handleChange}
+                type="password"
+              />
+            )}
+          </Grid>
+          <Grid margin={2}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className="submit"
+            >
+              {isSignup ? "Sign Up" : "Sign In"}
+            </Button>
+          </Grid>
+          <Grid margin={1}>
+            <Grid item>
+              <Button onClick={switchMode}>
+                {isSignup
+                  ? "Already have an account? Sign in"
+                  : "Don't have an account? Sign Up"}
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 

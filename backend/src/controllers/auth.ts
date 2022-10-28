@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
+
 import * as authService from "../services/auth";
+import { successResponse } from "../utils/responseHelper";
 
 /**
  * Refresh access token.
@@ -12,8 +14,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
   try {
     const { refreshToken } = req.body;
     const data = await authService.refreshToken(refreshToken);
-
-    res.send(data);
+    successResponse(res, data, 200);
   } catch (err) {
     next(err);
   }

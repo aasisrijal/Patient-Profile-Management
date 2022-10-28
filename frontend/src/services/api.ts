@@ -1,6 +1,5 @@
-import { getRequest, postRequest } from "./axios";
+import { getRequest, postRequest, deleteRequest } from "./axios";
 import { storeToken } from "./token";
-import axios from 'axios'
 
 export const listPatients = async () => {
   try {
@@ -11,14 +10,11 @@ export const listPatients = async () => {
   }
 };
 
-export const login = async (payload: any) => {
+export const loginApi = async (payload: any) => {
   try {
-    console.log('in login func')
     const { data } = await postRequest("signin", payload);
-    console.log('login', data)
-    storeToken(data);
+    storeToken(data.result);
 
-    // Redirect to home page
     window.location.href = "/";
   } catch (error) {
     console.log(error);
@@ -37,7 +33,16 @@ export const signup = async (payload: any) => {
 export const createPatient = async (payload: any) => {
   try {
     const data = await postRequest("patients", payload);
-    console.log("p created", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deletePatient = async (payload: any) => {
+  try {
+    const deleteUrl = `patients/${payload}`;
+    const data = await deleteRequest(deleteUrl);
     return data;
   } catch (error) {
     console.log(error);

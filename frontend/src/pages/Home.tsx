@@ -18,7 +18,7 @@ const Home: React.FC = () => {
 
   return (
     <div>
-     <Patient patients={patients} />
+      <Patient patients={patients} />
       {/* {patients.map((items) => {
         return <Patient patient={items} />;
       })} */}

@@ -22,5 +22,6 @@ router.get("/users", userController.allUsers);
 router.get("/patients", authenticate, patientController.allPatients);
 router.post("/patients", authenticate, patientController.create);
 router.put("/patients/:id", authenticate, patientController.updatePatient);
+router.delete("/patients/:id", authenticate, patientController.deletePatient);
 
 export default router;

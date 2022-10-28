@@ -1,5 +1,4 @@
 import { Response, NextFunction, Request } from "express";
-import * as jwt from "jsonwebtoken";
 
 import * as tokens from "../utils/jwt";
 import { ErrorHandler } from "./errorHandler";
@@ -32,14 +31,12 @@ export async function authenticate(
 ) {
   try {
     if (!("authorization" in req.headers)) {
-      // return res.status(401).json('Invalid credentials')
       throw new ErrorHandler(401, "Invalid credentials");
     }
 
     const authString = req.headers.authorization as string;
 
     if (!authString.startsWith(BEARER)) {
-      // return res.status(401).json('Invalid credentials')
       throw new ErrorHandler(401, "Invalid credentials");
     }
 

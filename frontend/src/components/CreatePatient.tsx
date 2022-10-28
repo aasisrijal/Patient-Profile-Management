@@ -1,112 +1,121 @@
 import React, { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { Row, Col, Container } from 'react-bootstrap';
+import {
+  Button,
+  Paper,
+  Grid,
+  Typography,
+  Container,
+  Checkbox,
+} from "@mui/material";
 
 import { createPatient } from "../services/api";
-
+import Input from "./Input/Input";
+import FileUpload from "./FileUpload";
 interface FormData {
   email: string;
   full_name: string;
   contact: string;
   dob: string;
   is_special: boolean;
+  imageFile?: File;
 }
 
 const CreatePatient: React.FC = (props) => {
   const [patient, setPatient] = useState<FormData>({
     email: "",
-    full_name: "",
+    full_name: "aasis",
     contact: "",
     dob: "",
     is_special: true,
+    // imageFile: undefined,
   });
+  const [fileError, setFileError] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPatient({ ...patient, [e.target.name]: e.target.value });
+    if (e.target.name === "is_special") {
+      setPatient({ ...patient, [e.target.name]: e.target.checked });
+    }
   };
 
+  const onSucessFile = (file: File) => {
+    console.log("file", file);
+    setFileError("");
+  };
+
+  const onErrorFile = (message: string) => {
+    console.log("file fail", message);
+    setFileError(message);
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log('patient c',patient)
-    // if(e.target.checked) {console.log('checked clicedk  ')}
-    // createPatient(patient);
+    createPatient(patient);
   };
   return (
+    <Container component="main" maxWidth="sm">
+      <Paper className="paper" elevation={6}>
+        <Typography component="h1" variant="h5">
+          Create a Patient
+        </Typography>
+        <form className="form" onSubmit={handleSubmit}>
+          <Grid container>
+            <Input
+              name="full_name"
+              label="Full Name"
+              value={patient.full_name}
+              handleChange={handleInputChange}
+              type="text"
+            />
+            <Input
+              name="email"
+              label="Email Address"
+              handleChange={handleInputChange}
+              type="email"
+            />
+            <Input
+              name="contact"
+              label="Contact Number"
+              handleChange={handleInputChange}
+              type="number"
+            />
+            <Input
+              name="dob"
+              label="Date of Birth"
+              handleChange={handleInputChange}
+              type="date"
+            />
+            <Grid item sm={12} margin={1}>
+              <Checkbox
+                name="is_special"
+                checked={patient.is_special}
+                onChange={handleInputChange}
+              />
+              <span>Is Patient Special?</span>
+            </Grid>
 
-    
-    <div>
-      <Container>
-    
-      <Form >
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            name="email"
-            required
-            value={patient.email}
-            onChange={handleInputChange}
-          />
-          
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Full Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter Full Name"
-            name="full_name"
-            required
-            value={patient.full_name}
-            onChange={handleInputChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicContact">
-          <Form.Label>Contact</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="Enter Contact Number"
-            name="contact"
-            required
-            value={patient.contact}
-            onChange={handleInputChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicDate">
-          <Form.Label>DOB</Form.Label>
-          <Form.Control
-            type="date"
-            placeholder="Enter Dob"
-            name="dob"
-            required
-            value={patient.dob}
-            onChange={handleInputChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formCheckbox">
-       <div className="form-group form-check">
-       <label className="form-check-label">Is patient special?</label>
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="exampleCheck1"
-                />
-                
-              </div>
-      </Form.Group>
-
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
-          Create
-        </Button>
-      </Form>
-      </Container>
-    </div>
+            <FileUpload
+              buttonText="Upload image"
+              fileTypes={["png", "jpeg"]}
+              onError={onErrorFile}
+              onSuccess={onSucessFile}
+            />
+            {fileError && <Typography>{fileError}</Typography>}
+          </Grid>
+          <Grid padding={2}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className="submit"
+            >
+              Create Patient
+            </Button>
+          </Grid>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 

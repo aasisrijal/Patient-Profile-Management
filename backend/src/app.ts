@@ -3,6 +3,8 @@ import routes from "./routes";
 import cors from "cors";
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
+import morgan from "morgan";
+
 import { handleError } from "./middlewares/errorHandler";
 
 const app = express();
@@ -12,6 +14,7 @@ dotenv.config();
 
 app.use(cors({}));
 app.use(bodyParser.json());
+app.use(morgan("tiny"));
 
 app.use("/api", routes);
 

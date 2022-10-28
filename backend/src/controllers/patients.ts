@@ -66,3 +66,26 @@ export async function updatePatient(
     next(err);
   }
 }
+
+/**
+ * Delete a patient
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ */
+export async function deletePatient(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id } = req.params;
+    console.log("id", id);
+    const patients = await patientService.removePatient(id);
+    console.log(patients);
+    successResponse(res, {}, 200, "Patient deleted successuflly");
+  } catch (err) {
+    next(err);
+  }
+}
