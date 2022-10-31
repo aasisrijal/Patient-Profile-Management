@@ -7,29 +7,27 @@ import {
   Container,
   Checkbox,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
-import { createPatient } from "../services/api";
+import { createPatient, updatePatient } from "../services/api";
 import Input from "./Input/Input";
 import FileUpload from "./FileUpload";
-interface FormData {
-  email: string;
-  full_name: string;
-  contact: string;
-  dob: string;
-  is_special: boolean;
-  imageFile?: File;
-}
+import { PatientFormData } from "../types";
+
+const initialFormValues = {
+  email: "",
+  full_name: "",
+  contact: "",
+  dob: "",
+  is_special: true,
+  image_url: "",
+};
 
 const CreatePatient: React.FC = (props) => {
-  const [patient, setPatient] = useState<FormData>({
-    email: "",
-    full_name: "aasis",
-    contact: "",
-    dob: "",
-    is_special: true,
-    // imageFile: undefined,
-  });
+  const location = useLocation();
+  const [patient, setPatient] = useState<PatientFormData>(initialFormValues);
   const [fileError, setFileError] = useState("");
+  const willUpdatePatient = location.state ? true : false;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPatient({ ...patient, [e.target.name]: e.target.value });
@@ -48,15 +46,25 @@ const CreatePatient: React.FC = (props) => {
     setFileError(message);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createPatient(patient);
+    willUpdatePatient ? updatePatient(patient) : createPatient(patient);
   };
+
+  useEffect(() => {
+    if (willUpdatePatient) {
+      let date = new Date(location.state.dob);
+      setPatient({ ...location.state, dob: date.toISOString().split("T")[0] });
+    } else {
+      setPatient(initialFormValues);
+    }
+  }, [location.state]);
+
   return (
     <Container component="main" maxWidth="sm">
       <Paper className="paper" elevation={6}>
         <Typography component="h1" variant="h5">
-          Create a Patient
+          {willUpdatePatient ? "Update Patient" : "Create a Patient"}
         </Typography>
         <form className="form" onSubmit={handleSubmit}>
           <Grid container>
@@ -70,18 +78,21 @@ const CreatePatient: React.FC = (props) => {
             <Input
               name="email"
               label="Email Address"
+              value={patient.email}
               handleChange={handleInputChange}
               type="email"
             />
             <Input
               name="contact"
               label="Contact Number"
+              value={patient.contact}
               handleChange={handleInputChange}
               type="number"
             />
             <Input
               name="dob"
               label="Date of Birth"
+              value={patient.dob}
               handleChange={handleInputChange}
               type="date"
             />
@@ -99,6 +110,7 @@ const CreatePatient: React.FC = (props) => {
               fileTypes={["png", "jpeg"]}
               onError={onErrorFile}
               onSuccess={onSucessFile}
+              imageUrlLink={patient.image_url}
             />
             {fileError && <Typography>{fileError}</Typography>}
           </Grid>
@@ -110,7 +122,7 @@ const CreatePatient: React.FC = (props) => {
               color="primary"
               className="submit"
             >
-              Create Patient
+              {willUpdatePatient ? "Update Patient" : "Create Patient"}
             </Button>
           </Grid>
         </form>

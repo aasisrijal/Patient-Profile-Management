@@ -13,9 +13,16 @@ export async function fetchAll(id) {
 }
 
 // Creates a new patient
-
 export async function createPatient(patient) {
   const newPatient = await knexConnection("patients").insert(patient);
+  return newPatient;
+}
+
+// Updates a patient
+export async function updatePatient(id, patientChanges) {
+  const newPatient = await knexConnection("patients")
+    .where("id", id)
+    .update(patientChanges);
   return newPatient;
 }
 

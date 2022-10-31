@@ -1,16 +1,10 @@
 import React, { ChangeEvent, useState } from "react";
 import { Button, Grid } from "@mui/material";
 
-type FileUploaderProps = {
-  buttonText: string;
-  fileTypes?: string[];
-  loading?: boolean;
-  onError: (error: string) => void;
-  onSuccess: (file: File) => void;
-};
+import { FileUploaderProps } from "../types";
 
 const FileUpload = (props: FileUploaderProps): React.ReactElement => {
-  const [imageurl, setImageurl] = useState("");
+  const [imageurl, setImageurl] = useState(props.imageUrlLink);
   const fileUploadFieldRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileUploadButtonClick = () => {
@@ -31,6 +25,7 @@ const FileUpload = (props: FileUploaderProps): React.ReactElement => {
     const fileType = file.type.split("/").pop() as string;
     if (props.fileTypes && !props.fileTypes.includes(fileType)) {
       props.onError("This file type is not allowed");
+      setImageurl("");
       return;
     }
 

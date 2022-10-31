@@ -1,4 +1,4 @@
-import { getRequest, postRequest, deleteRequest } from "./axios";
+import { getRequest, postRequest, deleteRequest, patchRequest } from "./axios";
 import { storeToken } from "./token";
 
 export const listPatients = async () => {
@@ -33,6 +33,16 @@ export const signup = async (payload: any) => {
 export const createPatient = async (payload: any) => {
   try {
     const data = await postRequest("patients", payload);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updatePatient = async (payload: any) => {
+  try {
+    const updateUrl = `patients/${payload.id}`;
+    const data = await patchRequest(updateUrl, payload);
     return data;
   } catch (error) {
     console.log(error);

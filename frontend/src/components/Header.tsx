@@ -6,9 +6,12 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
-import { Link } from "react-router-dom";
+import Box from "@mui/material/Box";
 
+import { Link } from "react-router-dom";
 import { clear } from "../services/token";
+
+const navItems = ["Home", "Login", "Create Patient"];
 
 export const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -28,21 +31,30 @@ export const Header = () => {
     window.location.href = "/login";
   };
   return (
-    <AppBar position="static">
+    // <Box >
+    <AppBar component="nav" sx={{ display: "flex" }} position="static">
       <Toolbar>
-        <Typography variant="h6">Patient Profiles Management</Typography>
-        <div className="navlinks">
-          <Link to="/" style={{ color: "white" }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+        >
+          Patient Profiles Management
+        </Typography>
+
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Link to="/" style={{ color: "white", padding: "2px" }}>
             Home
           </Link>
-          <Link to="/login" style={{ color: "white" }}>
+          <Link to="/login" style={{ color: "white", padding: "2px" }}>
             Login
           </Link>
-          <Link to="/create" style={{ color: "white" }}>
+          <Link to="/create" style={{ color: "white", padding: "2px" }}>
             Create Patient
           </Link>
-        </div>
-        <div>
+        </Box>
+
+        <Box sx={{ flexGrow: 0 }}>
           <IconButton onClick={handleMenu} color="inherit">
             <Avatar src="" />
           </IconButton>
@@ -54,8 +66,10 @@ export const Header = () => {
           >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
-        </div>
+        </Box>
+        {/* </div> */}
       </Toolbar>
     </AppBar>
+    // </Box>
   );
 };

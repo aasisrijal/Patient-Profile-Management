@@ -55,13 +55,15 @@ export async function create(
  * @param {NextFunction} next
  */
 export async function updatePatient(
-  req: Request,
+  req: AuthInfoRequest,
   res: Response,
   next: NextFunction
 ) {
   try {
-    // const patients = await patientService.updatePatient(req.body);
-    // successResponse(res, patients, 201)
+    const { id } = req.params;
+    const updatedBody = req.body;
+    const patients = await patientService.updatePatient(id, updatedBody);
+    successResponse(res, patients, 201);
   } catch (err) {
     next(err);
   }
@@ -81,9 +83,7 @@ export async function deletePatient(
 ) {
   try {
     const { id } = req.params;
-    console.log("id", id);
     const patients = await patientService.removePatient(id);
-    console.log(patients);
     successResponse(res, {}, 200, "Patient deleted successuflly");
   } catch (err) {
     next(err);

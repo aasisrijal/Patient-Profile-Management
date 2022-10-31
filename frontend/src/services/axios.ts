@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from "axios";
 
 import { storeToken, getToken, getRefreshToken } from "./token";
 
@@ -33,11 +33,14 @@ axiosClient.interceptors.response.use(
       error.response.status === 500 &&
       error.response.data.message === "jwt expired"
     ) {
-      // window.location.href = '/';
+      window.location.href = "/login";
       try {
         const tokens = await postRequest("auth/refresh", {
           refreshToken: getRefreshToken(),
         });
+        if (!tokens) {
+          window.location.href = "/login";
+        }
         storeToken(tokens.data);
       } catch (e) {
         window.location.href = "/login";
@@ -60,7 +63,7 @@ export async function postRequest(URL: string, payload: any) {
 }
 
 export async function patchRequest(URL: string, payload: any) {
-  const response = await axiosClient.patch(`/${URL}`, payload);
+  const response = await axiosClient.put(`/${URL}`, payload);
   return response;
 }
 

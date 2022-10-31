@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-// import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
-// import Container from "react-bootstrap/Container";
 import {
   Avatar,
   Button,
@@ -13,7 +10,6 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import Input from "../components/Input/Input";
-// import * from '../components/Input/input.css'
 import { loginApi, signup } from "../services/api";
 
 const initialState = { email: "", password: "" };
@@ -28,8 +24,6 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("form", isSignup, form);
-    // console.log({ email, password })
     isSignup
       ? signup(form)
       : loginApi({ email: form.email, password: form.password });
