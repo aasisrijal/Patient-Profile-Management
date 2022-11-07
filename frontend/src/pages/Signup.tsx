@@ -8,30 +8,51 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Link, useNavigate } from "react-router-dom";
 
 import Input from "../components/Input/Input";
 import { loginApi, signup } from "../services/api";
+import toast from 'react-hot-toast';
 
-const initialState = { email: "", password: "" };
+const initialState = { email: "", password: "", confirmPassword: "" };
 
 const Signup: React.FC<{ login: Boolean }> = (props: any) => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(!props.login);
   const [showPassword, setShowPassword] = useState(false);
+  const [apiError, setApiError]= useState("")
 
-  const handleChange = (e: any) =>
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async(e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    isSignup
-      ? signup(form)
-      : loginApi({ email: form.email, password: form.password });
+      if(isSignup && (form.password !== form.confirmPassword)) {
+        toast.error('Passwords must be same')
+        return;
+      }
+    const response = isSignup
+      ? await signup({ email: form.email, password: form.password })
+      : await loginApi({ email: form.email, password: form.password });
+
+    console.log('login res',response)
+    if(response.status==="error"){
+      setApiError(response.message)
+      toast.error(response.message)
+    } else if(response.statusCode === 200 && !isSignup){
+      navigate("/", { replace: true});
+    } else {
+      toast.success(response.message);
+      switchMode();
+    }
   };
   const switchMode = () => {
-    setForm(initialState);
+    setForm({ email: "", password:"", confirmPassword:""});
     setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
     setShowPassword(false);
+    setApiError("");
   };
   const handleShowPassword = () => setShowPassword(!showPassword);
 
@@ -49,12 +70,14 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
             <Input
               name="email"
               label="Email Address"
+              value={form.email}
               handleChange={handleChange}
               type="email"
             />
             <Input
               name="password"
               label="Password"
+              value={form.password}
               handleChange={handleChange}
               type={showPassword ? "text" : "password"}
               handleShowPassword={handleShowPassword}
@@ -63,6 +86,7 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
               <Input
                 name="confirmPassword"
                 label="Repeat Password"
+                value={form.confirmPassword}
                 handleChange={handleChange}
                 type="password"
               />
@@ -78,6 +102,8 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
             >
               {isSignup ? "Sign Up" : "Sign In"}
             </Button>
+
+            {apiError && <h4>{apiError}</h4>}
           </Grid>
           <Grid margin={1}>
             <Grid item>

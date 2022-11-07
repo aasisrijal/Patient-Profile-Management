@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 
 import CreatePatient from "./components/CreatePatient";
 import { Header } from "./components/Header";
@@ -11,6 +12,8 @@ import Signup from "./pages/Signup";
 function App() {
   return (
     <div className="App">
+      <Toaster position="bottom-center"
+      reverseOrder={false}/>
       <Header />
 
       <Routes>

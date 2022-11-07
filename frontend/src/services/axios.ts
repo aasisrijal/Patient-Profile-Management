@@ -1,8 +1,9 @@
 import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from "axios";
+import jwt_decode from "jwt-decode";
 
 import { storeToken, getToken, getRefreshToken } from "./token";
 
-const baseUrl = "http://localhost:3000/api";
+const baseUrl:string = process.env.REACT_APP_BASE_URL!;
 
 const axiosClient = axios.create({
   baseURL: baseUrl,
@@ -26,14 +27,25 @@ axiosClient.interceptors.request.use(
   }
 );
 
+type User = {
+  [key: string]: any;
+};
+
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log('error in tokens')
+    const user:User = await jwt_decode(getToken("access_token")!);
+    console.log('user', user)
+    if (user && user.exp < Math.floor(Date.now()/1000)) {
+      console.log('token expired');
+      window.location.href = "/login";
+    }
+    
     if (
       error.response.status === 500 &&
       error.response.data.message === "jwt expired"
     ) {
-      window.location.href = "/login";
       try {
         const tokens = await postRequest("auth/refresh", {
           refreshToken: getRefreshToken(),
@@ -46,11 +58,12 @@ axiosClient.interceptors.response.use(
         window.location.href = "/login";
       }
 
-      // redirect to login when access token expires
     }
-    // window.location.href = "/login";
+    return error.response
   }
 );
+
+export default axiosClient;
 
 export async function getRequest(URL: string) {
   const response = await axiosClient.get(`/${URL}`);

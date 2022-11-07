@@ -1,8 +1,7 @@
 import knexConnection from "../../db";
+
 /**
  * Fetch all patients.
- *
- * @returns {Promise}
  */
 export async function fetchAll(id) {
   const patients = await knexConnection("patients").where("user_id", id);
@@ -10,6 +9,12 @@ export async function fetchAll(id) {
     count: patients.length,
     data: patients,
   };
+}
+
+// Get a Patient by email
+export async function getPatient(email) {
+  const patient = await knexConnection("patients").where("email", email);
+  return patient;
 }
 
 // Creates a new patient

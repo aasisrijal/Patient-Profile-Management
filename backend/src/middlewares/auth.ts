@@ -2,20 +2,9 @@ import { Response, NextFunction, Request } from "express";
 
 import * as tokens from "../utils/jwt";
 import { ErrorHandler } from "./errorHandler";
+import { UserToken, CustomRequest } from "../types"
 
 const BEARER = "Bearer";
-
-interface User {
-  id: Number;
-  email: String;
-  password: String;
-  created_at: String;
-  updated_at: String;
-}
-
-export interface CustomRequest extends Request {
-  user: User;
-}
 
 /**
  * Middleware to validate access token present in the header.
@@ -43,7 +32,7 @@ export async function authenticate(
     const accessToken = authString.substring(BEARER.length).trim();
 
     (req as CustomRequest).user =
-      tokens.verifyAccessToken(accessToken).encryptedData[0];
+      tokens.verifyAccessToken(accessToken).encryptedData;
 
     next();
   } catch (err) {

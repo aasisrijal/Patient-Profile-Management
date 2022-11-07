@@ -5,9 +5,9 @@ import { User, TokenData } from "../types";
 /**
  * Generate access and refresh tokens.
  *
- * @param {any} data
+ * @param {User} data
  */
-export function generateTokens(data: any) {
+export function generateTokens(data: User) {
   return {
     accessToken: generateAccessToken(data),
     refreshToken: generateRefreshToken(data),
@@ -17,13 +17,16 @@ export function generateTokens(data: any) {
 /**
  * Generate access token.
  *
- * @param {any} data
+ * @param {User} data
  * @returns {string}
  */
-export function generateAccessToken(data: any) {
+export function generateAccessToken(data: User) {
   return jwt.sign(
     {
-      encryptedData: data,
+      encryptedData: {
+        id: data.id,
+        email: data.email
+      },
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -35,10 +38,10 @@ export function generateAccessToken(data: any) {
 /**
  * Generate refresh token.
  *
- * @param {any} data
+ * @param {User} data
  * @returns {string}
  */
-export function generateRefreshToken(data: any) {
+export function generateRefreshToken(data: User) {
   return jwt.sign(
     {
       encryptedData: data,

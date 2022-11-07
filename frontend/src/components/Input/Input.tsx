@@ -6,13 +6,11 @@ import {
   IconButton,
   TextFieldProps,
 } from "@mui/material";
-
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 type FormInputProps = {
   name: string;
-  half?: boolean;
   handleChange: (e: any) => void;
   handleShowPassword?: () => void;
 } & TextFieldProps;
@@ -21,7 +19,6 @@ const Input: React.FC<FormInputProps> = ({
   name,
   handleChange,
   label,
-  half,
   autoFocus,
   type,
   value,

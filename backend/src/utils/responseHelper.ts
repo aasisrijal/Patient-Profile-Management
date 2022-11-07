@@ -3,12 +3,12 @@ import { Response } from "express";
 export const successResponse = (
   res: Response,
   result = {},
-  code = 200,
+  statusCode = 200,
   message = ""
 ) => {
   return res.json({
     result,
-    code,
+    statusCode,
     message,
   });
 };
