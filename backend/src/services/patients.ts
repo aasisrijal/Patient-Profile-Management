@@ -1,14 +1,15 @@
-import knexConnection from "../../db";
+import knexConnection from "../db";
 
 /**
  * Fetch all patients.
  */
-export async function fetchAll(id) {
-  const patients = await knexConnection("patients").where("user_id", id);
-  return {
-    count: patients.length,
-    data: patients,
-  };
+export async function fetchAll(id, query) {
+  const {page} = query;
+  const patients = await knexConnection("patients").where("user_id", id)
+  .orderBy("is_special","desc")
+  .orderBy("created_at","desc")
+    .paginate({ perPage: 20, currentPage: page, isLengthAware: true });
+  return patients;
 }
 
 // Get a Patient by email

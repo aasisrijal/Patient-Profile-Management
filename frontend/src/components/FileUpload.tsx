@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Grid } from "@mui/material";
 
 import { FileUploaderProps } from "../types";
@@ -32,6 +32,10 @@ const FileUpload = (props: FileUploaderProps): React.ReactElement => {
     setImageurl(URL.createObjectURL(file));
     props.onSuccess(file);
   };
+
+  useEffect(() => {
+    setImageurl(props.imageUrlLink);
+  }, [props.imageUrlLink])
 
   return (
     <Grid item sm={12} margin={2}>

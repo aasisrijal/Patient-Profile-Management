@@ -7,8 +7,8 @@ export const REFRESH_TOKEN = "refresh_token";
  * @param {{accessToken, refresToken}} params
  */
 export function storeToken({ accessToken, refreshToken }: any) {
-  localStorage.setItem(ACCESS_TOKEN, accessToken);
-  localStorage.setItem(REFRESH_TOKEN, refreshToken);
+  localStorage.setItem(ACCESS_TOKEN, JSON.stringify(accessToken));
+  localStorage.setItem(REFRESH_TOKEN, JSON.stringify(refreshToken));
 }
 
 export function setToken(keyName: string, value: string | null) {
@@ -21,7 +21,12 @@ export function setToken(keyName: string, value: string | null) {
  * @returns {string}
  */
 export function getToken(keyName: string) {
-  return localStorage.getItem(keyName);
+  let token = localStorage.getItem(keyName);
+  if (token) {
+    return JSON.parse(token)
+  } else {
+    return token;
+  }
 }
 
 /**

@@ -1,4 +1,4 @@
-import knexConnection from "../../db";
+import knexConnection from "../db";
 
 /**
  * Fetch all users.

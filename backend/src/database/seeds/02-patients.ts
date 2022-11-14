@@ -1,42 +1,31 @@
 import { Knex } from "knex";
+import { faker } from '@faker-js/faker';
+
+function createRandomPatients(idNumber) {
+  return {
+    id: idNumber,
+    user_id: 1,
+    full_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    email: faker.internet.email(),
+    image_url: faker.image.avatar(),
+    dob: faker.date.birthdate(),
+    contact: faker.phone.number('##########'),
+    is_special: false,
+    is_deleted: false,
+  };
+}
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex("patients").del();
 
+  const fakePatients = [];
+  const desiredFakePatients = 1000;
+  
+  for (let i=1; i<=desiredFakePatients+1; i++){
+    fakePatients.push(createRandomPatients(i));
+  }
+
   // Inserts seed entries
-  await knex("patients").insert([
-    {
-      full_name: "Ram Thapa",
-      user_id: 1,
-      contact: 98233229,
-      email: "patient@gmail.com",
-      dob: "2050-08-09",
-      image_url: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      is_special: false,
-      is_deleted: false,
-    },
-    {
-      id: 2,
-      full_name: "Jon Snow",
-      user_id: 1,
-      contact: 98233229,
-      email: "patient2@gmail.com",
-      dob: "2050-08-09",
-      image_url: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      is_special: false,
-      is_deleted: false,
-    },
-    {
-      id: 3,
-      full_name: "Keanu K",
-      user_id: 1,
-      contact: 98233229,
-      email: "patient3@gmail.com",
-      dob: "2050-08-09",
-      image_url: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-      is_special: false,
-      is_deleted: false,
-    },
-  ]);
+  await knex("patients").insert(fakePatients);
 }

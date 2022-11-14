@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -8,13 +8,16 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import { AuthContext } from "./hooks/useAuth";
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
   return (
     <div className="App">
+      <AuthContext.Provider value={{ loggedIn, setLoggedIn }}>
       <Toaster position="bottom-center"
       reverseOrder={false}/>
-      <Header />
+      <Header/>
 
       <Routes>
         <Route
@@ -37,6 +40,7 @@ function App() {
           }
         />
       </Routes>
+      </AuthContext.Provider>
     </div>
   );
 }

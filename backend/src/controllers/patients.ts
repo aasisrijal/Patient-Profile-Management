@@ -19,7 +19,8 @@ export async function allPatients(
 ) {
   try {
     const { id } = req.user;
-    const patients = await patientService.fetchAll(id);
+    console.log('page',req.query);
+    const patients = await patientService.fetchAll(id, req.query);
     successResponse(res, patients, 200);
   } catch (err) {
     next(err);

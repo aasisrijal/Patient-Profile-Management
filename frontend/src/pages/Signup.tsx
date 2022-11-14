@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input/Input";
 import { loginApi, signup } from "../services/api";
 import toast from 'react-hot-toast';
+import { useAuth } from "../hooks/useAuth";
 
 const initialState = { email: "", password: "", confirmPassword: "" };
 
@@ -20,7 +21,8 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(!props.login);
   const [showPassword, setShowPassword] = useState(false);
-  const [apiError, setApiError]= useState("")
+  const [apiError, setApiError]= useState("");
+  const { loggedIn, setLoggedIn } = useAuth();
 
   const navigate = useNavigate();
 
@@ -42,6 +44,7 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
       setApiError(response.message)
       toast.error(response.message)
     } else if(response.statusCode === 200 && !isSignup){
+      setLoggedIn(!loggedIn);
       navigate("/", { replace: true});
     } else {
       toast.success(response.message);

@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments().primary();
     table.string("full_name", 100);
     table.string("email").unique().notNullable();
-    table.integer("contact", 100);
+    table.bigint("contact");
     table.date("dob");
     table.string("image_url");
     table;

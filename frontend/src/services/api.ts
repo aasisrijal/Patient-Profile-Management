@@ -3,14 +3,13 @@ import axios from 'axios';
 
 import { getRequest, postRequest, deleteRequest, patchRequest } from "./axios";
 import { storeToken, getToken } from "./token";
-import  SimpleSnackbar  from "../components/ToastMessage";
 
-export const listPatients = async () => {
+export const listPatients = async (page:number) => {
   try {
-    const data  = await getRequest("patients");
+    const data  = await getRequest(`patients?page=${page}`);
     if (data.data.statusCode === 200){
       toast.success('Successfully fetched all patients!');
-      return data.data.result.data;
+      return data.data.result;
     }
     
   } catch (error) {
@@ -21,13 +20,11 @@ export const listPatients = async () => {
 export const loginApi = async (payload: any) => {
   try {
     const { data } = await postRequest("signin", payload);
-    console.log(data)
-    storeToken(data.result);
+    
+    if(data.statusCode === 200) {
+      storeToken(data.result);
+    }
     return data;
-    // if(data.data.statusCode === 201) {
-    //   storeToken(data.data.result);
-    //   // window.location.href = "/";
-    // }
     
   } catch (error) {
     toast.error('Failed to login!');
@@ -48,7 +45,6 @@ export const signup = async (payload: any) => {
 export const createPatient = async (payload: any) => {
   try {
     const data = await postRequest("patients", payload);
-    console.log('data in api',data)
     return data;
   } catch (error) {
     console.log(error);
@@ -59,7 +55,6 @@ export const updatePatient = async (payload: any) => {
   try {
     const updateUrl = `patients/${payload.id}`;
     const data = await patchRequest(updateUrl, payload);
-    console.log('data in api',data)
     return data;
   } catch (error) {
     console.log(error);

@@ -8,13 +8,15 @@ import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { clear } from "../services/token";
+import { useAuth } from "../hooks/useAuth";
 
-const navItems = ["Home", "Login", "Create Patient"];
 
 export const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { loggedIn, setLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const open = Boolean(anchorEl);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -26,12 +28,12 @@ export const Header = () => {
   };
 
   const handleLogout = () => {
-    console.log("cleared");
     clear();
-    window.location.href = "/login";
+    setLoggedIn(false);
+    navigate("/login", { replace: true});
   };
+
   return (
-    // <Box >
     <AppBar component="nav" sx={{ display: "flex" }} position="static">
       <Toolbar>
         <Typography
@@ -43,15 +45,15 @@ export const Header = () => {
         </Typography>
 
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <Link to="/" style={{ color: "white", padding: "2px" }}>
-            Home
-          </Link>
-          <Link to="/login" style={{ color: "white", padding: "2px" }}>
+          
+          {!loggedIn && <Link to="/login" style={{ color: "white", padding: "2px" }}>
             Login
-          </Link>
-          <Link to="/create" style={{ color: "white", padding: "2px" }}>
-            Create Patient
-          </Link>
+          </Link>}
+          {loggedIn && (<><Link to="/" style={{ color: "white", padding: "2px" }}>
+            Home
+          </Link><Link to="/create" style={{ color: "white", padding: "2px" }}>
+              Create Patient
+            </Link></>)}
         </Box>
 
         <Box sx={{ flexGrow: 0 }}>
@@ -70,6 +72,5 @@ export const Header = () => {
         {/* </div> */}
       </Toolbar>
     </AppBar>
-    // </Box>
   );
 };

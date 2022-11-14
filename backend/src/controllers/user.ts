@@ -48,7 +48,7 @@ export async function signin(req: Request, res: Response, next: NextFunction) {
       userExist[0].password
     );
     if (!validPwd) {
-      throw new ErrorHandler(400, "Password doesn't match with the email");
+      throw new ErrorHandler(400, "User Ccedentials doesn't match");
     }
     if (userExist && validPwd) {
       // generate token

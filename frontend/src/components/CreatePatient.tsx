@@ -6,7 +6,6 @@ import {
   Typography,
   Container,
   Checkbox,
-  Snackbar,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
@@ -132,7 +131,7 @@ const CreatePatient: React.FC = (props) => {
               onError={onErrorFile}
               onSuccess={onSucessFile}
               imageUrlLink={patient.image_url} />
-            {fileError && <Typography>{fileError}</Typography>}
+            {/* {fileError && <Typography>{fileError}</Typography>} */}
           </Grid>
           <Grid padding={2}>
             <Button

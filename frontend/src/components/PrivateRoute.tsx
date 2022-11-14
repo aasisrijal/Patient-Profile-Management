@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-import  {useAuthVerify} from "../hooks/useAuthVerify";
+import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   children: JSX.Element;
@@ -8,9 +8,10 @@ type Props = {
 
 
 const PrivateRoute = ({ children }: Props) => {
-  const user = useAuthVerify();
-  console.log('user', user)
-  return user ? children : <Navigate to="/login" />;
+  // const userLogged = localStorage.getItem("access_token") ? true: false;
+  const { loggedIn, setLoggedIn } = useAuth();
+  
+  return loggedIn ? children : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
