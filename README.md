@@ -4,9 +4,11 @@ A simple patient  management system
 
 ## Available Scripts
 
-In the project directory, after setting the postgres database configuration and change .env file, then you can run:
+In the project directory,go to backend directory
 
 ### `cd backend`
+
+After setting the postgres database configuration and change .env file, then you can run:
 
 ### `npm install`
 
