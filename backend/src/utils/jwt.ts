@@ -1,4 +1,5 @@
 import * as jwt from "jsonwebtoken";
+import { ErrorHandler } from "../middlewares/errorHandler";
 
 import { User, TokenData } from "../types";
 
@@ -59,7 +60,11 @@ export function generateRefreshToken(data: User) {
  * @param {string} token
  */
 export function verifyAccessToken(token: string) {
-  return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as TokenData;
+  try {
+    return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as TokenData;
+  }catch(error){
+    throw new ErrorHandler(401, "invalid token");
+  }
 }
 
 /**
@@ -68,5 +73,9 @@ export function verifyAccessToken(token: string) {
  * @param {string} token
  */
 export function verifyRefreshToken(token: string) {
-  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET) as TokenData;
+  try {
+    return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET) as TokenData;
+  }catch(error){
+    throw new ErrorHandler(401, "invalid token");
+  }
 }

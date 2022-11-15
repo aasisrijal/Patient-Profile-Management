@@ -1,12 +1,17 @@
 export const ACCESS_TOKEN = "access_token";
 export const REFRESH_TOKEN = "refresh_token";
 
+interface tokensType {
+  accessToken: string;
+  refreshToken: string;
+}
+
 /**
  * Persist token to localStorage.
  *
  * @param {{accessToken, refresToken}} params
  */
-export function storeToken({ accessToken, refreshToken }: any) {
+export function storeToken({ accessToken, refreshToken }: tokensType) {
   localStorage.setItem(ACCESS_TOKEN, JSON.stringify(accessToken));
   localStorage.setItem(REFRESH_TOKEN, JSON.stringify(refreshToken));
 }
@@ -34,8 +39,17 @@ export function getToken(keyName: string) {
  *
  * @param {string} accessToken
  */
-export function setAccessToken(accessToken: any) {
-  localStorage.setItem(ACCESS_TOKEN, accessToken);
+export function setAccessToken(accessToken: string) {
+  localStorage.setItem(ACCESS_TOKEN, JSON.stringify(accessToken));
+}
+
+/**
+ * Set refesh token from storage.
+ *
+ * @param {string} refreshToken
+ */
+ export function setRefreshToken(refreshToken: string) {
+  localStorage.setItem(REFRESH_TOKEN, JSON.stringify(refreshToken));
 }
 
 /**
@@ -44,7 +58,16 @@ export function setAccessToken(accessToken: any) {
  * @returns {string}
  */
 export function getRefreshToken() {
-  return localStorage.getItem(REFRESH_TOKEN);
+  return JSON.parse(localStorage.getItem(REFRESH_TOKEN)!);
+}
+
+/**
+ * Get access token from storage.
+ *
+ * @returns {string}
+ */
+ export function getAccessToken() {
+  return JSON.parse(localStorage.getItem(ACCESS_TOKEN)!);
 }
 
 /**

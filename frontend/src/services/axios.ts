@@ -1,7 +1,7 @@
 import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
 import jwt_decode from "jwt-decode";
 
-import { getToken, clear } from "./token";
+import { getAccessToken, clear, setAccessToken, getRefreshToken } from "./token";
 
 const baseUrl:string = process.env.REACT_APP_BASE_URL!;
 
@@ -15,10 +15,9 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    if (config.headers) {
-      config.headers["Authorization"] = `Bearer ${getToken(
-        "access_token"
-      )}` as unknown as AxiosHeaders;
+    const accessToken = getAccessToken();
+    if (config.headers && accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}` as unknown as AxiosHeaders;
     }
     return config;
   },
@@ -33,22 +32,31 @@ type User = {
 
 axiosClient.interceptors.response.use(
   (response) => response,
-  async (error) => {    
+  async (error) => { 
+    const originalConfig = error.config;   
+    if (originalConfig.url !== "/api/signin" && error.response) {
     if (
-      error.response.status === 500 &&
-      error.response.data.message === "jwt expired"
+      error.response.status === 401 &&
+      !originalConfig._retry
     ) {
+      originalConfig._retry = true;
       try {
-        const user:User = await jwt_decode(getToken("access_token")!);
+        const user:User = await jwt_decode(getRefreshToken()!);
         if (user && user.exp < Math.floor(Date.now()/1000)) {
           clear();
           window.location.href = "/login";
+        } else {
+          const tokens = await axiosClient.post("auth/refresh", {
+            refreshToken: getRefreshToken(),
+          });
+          setAccessToken(tokens.data.result.accessToken);
+          return axiosClient(originalConfig.url);
         }
       } catch (e) {
-        window.location.href = "/login";
+        return Promise.reject(e);
       }
 
-    }
+    }}
     return error.response
   }
 );

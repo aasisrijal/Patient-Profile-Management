@@ -9,9 +9,9 @@ import * as userService from "./users";
  */
 export async function refreshToken(refreshToken: string) {
   const data = await tokens.verifyRefreshToken(refreshToken);
-  const user = await userService.getUserById(data.encryptedData[0].id);
-  const accessTokens = await tokens.generateTokens(user[0]);
+  const user = await userService.getUserById(data.encryptedData.id);
+  const accessTokenGen = await tokens.generateAccessToken(user[0]);
   return {
-    ...accessTokens,
-  };
+    accessToken: accessTokenGen
+  }
 }
