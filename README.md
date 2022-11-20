@@ -17,7 +17,7 @@ To run seed data:
 
 ### `npm run dev`
 
-Runs the server in the development mode at 5000 prot.\
+Runs the server in the development mode at 5000 port.
 
 To run frontend:
 
