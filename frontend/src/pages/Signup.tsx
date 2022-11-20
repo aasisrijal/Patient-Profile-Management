@@ -21,7 +21,7 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(!props.login);
   const [showPassword, setShowPassword] = useState(false);
-  const [apiError, setApiError]= useState("");
+
   const { loggedIn, setLoggedIn } = useAuth();
 
   const navigate = useNavigate();
@@ -39,10 +39,15 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
       ? await signup({ email: form.email, password: form.password })
       : await loginApi({ email: form.email, password: form.password });
 
-    console.log('login res',response)
     if(response.status==="error"){
-      setApiError(response.message)
-      toast.error(response.message)
+      if(Array.isArray(response.errors)){
+        for(let i=0; i<(response.errors).length; i++){
+          toast.error(response.errors[i].msg)
+        }
+      } else {
+        toast.error(response.message)
+      }
+      
     } else if(response.statusCode === 200 && !isSignup){
       setLoggedIn(!loggedIn);
       navigate("/", { replace: true});
@@ -55,7 +60,6 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
     setForm({ email: "", password:"", confirmPassword:""});
     setIsSignup((prevIsSignup: boolean) => !prevIsSignup);
     setShowPassword(false);
-    setApiError("");
   };
   const handleShowPassword = () => setShowPassword(!showPassword);
 
@@ -106,7 +110,6 @@ const Signup: React.FC<{ login: Boolean }> = (props: any) => {
               {isSignup ? "Sign Up" : "Sign In"}
             </Button>
 
-            {apiError && <h4>{apiError}</h4>}
           </Grid>
           <Grid margin={1}>
             <Grid item>

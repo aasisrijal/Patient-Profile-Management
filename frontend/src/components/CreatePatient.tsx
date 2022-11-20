@@ -35,6 +35,7 @@ const CreatePatient: React.FC = (props) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPatient({ ...patient, [e.target.name]: e.target.value });
+    setApiResponse({...apiResponse, error:false});
     if (e.target.name === "is_special") {
       setPatient({ ...patient, [e.target.name]: e.target.checked });
     }
@@ -53,7 +54,7 @@ const CreatePatient: React.FC = (props) => {
       setPatient({ ...patient, image_url: uploadResponse.data.secure_url });
     } else {
       toast.error("Image upload failed");
-      setApiResponse({...apiResponse, error:true})
+      setApiResponse({...apiResponse, error:true});
     }
     setFileError("");
   };
@@ -66,12 +67,21 @@ const CreatePatient: React.FC = (props) => {
   const handleSubmit = async(e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     const response = willUpdatePatient ? await updatePatient(patient) : await createPatient(patient);
-    if (response?.status === 400) {
-      setApiResponse({message:response?.data.message, error: true})
-      toast.error(response.data.message)
+    console.log(response);
+    if (response?.data.status === "error") {
+      if(Array.isArray(response.data.errors)){
+        for(let i=0; i<(response.data.errors).length; i++){
+          toast.error(response.data.errors[i].msg)
+          setApiResponse({...apiResponse, error: true});
+        }
+      } else {
+        toast.error(response.data.message);
+        setApiResponse({...apiResponse, error: true});
+      }
+      
     } else {
-      setApiResponse({message:response?.data.message, error: false})
-      toast.success(response?.data.message )
+      setApiResponse({message:response?.data.message, error: false});
+      toast.success(response?.data.message);
     }
   };
 

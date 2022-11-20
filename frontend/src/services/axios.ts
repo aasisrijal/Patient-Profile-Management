@@ -50,7 +50,7 @@ axiosClient.interceptors.response.use(
             refreshToken: getRefreshToken(),
           });
           setAccessToken(tokens.data.result.accessToken);
-          return axiosClient(originalConfig.url);
+          return axiosClient(originalConfig);
         }
       } catch (e) {
         return Promise.reject(e);

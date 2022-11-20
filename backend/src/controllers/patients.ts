@@ -43,7 +43,9 @@ export async function create(
     const { id } = req.user;
     req.body.user_id = id; 
     // check whether patient exists or not
+    console.log('p crate', req.body);
     const patientExists = await patientService.getPatient(req.body.email);
+    console.log('patient', patientExists);
     if (patientExists.length > 0) {
       // throw new ErrorHandler(400, "Patient already exists");
       res.status(400).send({message:"Patient already exists"})
@@ -71,7 +73,7 @@ export async function updatePatient(
     const { id } = req.params;
     const updatedBody = req.body;
     const patients = await patientService.updatePatient(id, updatedBody);
-    successResponse(res, patients, 201, "Pateint updated successfully");
+    successResponse(res, patients, 201, "Patient updated successfully");
   } catch (err) {
     next(err);
   }
